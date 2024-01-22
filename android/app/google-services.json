@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "647825882151",
+    "project_id": "automatic-irrigation-sys-29111",
+    "storage_bucket": "automatic-irrigation-sys-29111.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:647825882151:android:9b65cdc3a0ee452e4be202",
+        "android_client_info": {
+          "package_name": "com.firstapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmbQd3pfR6MiQenK8MSmQAjDCBeJvdGvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
