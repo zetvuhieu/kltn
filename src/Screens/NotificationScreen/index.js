@@ -1,23 +1,18 @@
 import React from 'react';
 import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import Header from '../../Components/Header/index';
-import DateTime from './components/dateTime';
-import TableControl from './components/tableControl';
+import NotificationList from './components/NotificationList';
 import background from '../../assets/background6.jpg';
-
-const HomeScreen = () => {
+const NotificationScreen = () => {
   return (
     <ImageBackground source={background} style={styles.background}>
       <View style={styles.container}>
         <View style={styles.content}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Automatic Irrigation System</Text>
-          </View>
-          <View style={styles.timeContainer}>
-            <DateTime />
+            <Text style={styles.title}>Notification</Text>
           </View>
           <View style={styles.tableContainer}>
-            <TableControl />
+            <NotificationList style={styles.notificationList} />
           </View>
         </View>
         <Header style={styles.header} />
@@ -36,8 +31,11 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    alignItems: 'center',
+    width: '100%',
   },
   titleContainer: {
+    flexDirection: 'row',
     marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -49,19 +47,12 @@ const styles = StyleSheet.create({
     color: '#261a57',
     elevation: 10,
   },
-  timeContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '8%',
-  },
   tableContainer: {
-    flex: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '80%',
+    flex: 1,
+    width: '95%',
+  },
+  notificationList: {
+    width: '100%', // Ensures NotificationList takes the full width of the container
   },
   header: {
     position: 'absolute',
@@ -70,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default NotificationScreen;

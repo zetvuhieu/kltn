@@ -1,27 +1,26 @@
 import React from 'react';
 import {View, Text, StyleSheet, ImageBackground} from 'react-native';
-import Header from '../../Components/Header/index';
-import DateTime from './components/dateTime';
-import TableControl from './components/tableControl';
 import background from '../../assets/background6.jpg';
+import Header from '../../Components/Header/index';
+import DashboardBar from './components/DashboardBar';
 
-const HomeScreen = () => {
+const DashboardScreen = () => {
   return (
     <ImageBackground source={background} style={styles.background}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Dashboard</Text>
+      </View>
       <View style={styles.container}>
         <View style={styles.content}>
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Automatic Irrigation System</Text>
-          </View>
-          <View style={styles.timeContainer}>
-            <DateTime />
+          <View style={styles.modeContainer}>
+            <DashboardBar />
           </View>
           <View style={styles.tableContainer}>
-            <TableControl />
+            <Text>02</Text>
           </View>
         </View>
-        <Header style={styles.header} />
       </View>
+      <Header style={styles.header} />
     </ImageBackground>
   );
 };
@@ -49,12 +48,13 @@ const styles = StyleSheet.create({
     color: '#261a57',
     elevation: 10,
   },
-  timeContainer: {
+  modeContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
     height: '8%',
+    marginTop: -50,
   },
   tableContainer: {
     flex: 3,
@@ -70,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default DashboardScreen;

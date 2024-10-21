@@ -2,24 +2,16 @@ import React from 'react';
 import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import background from '../../assets/background6.jpg';
 import Header from '../../Components/Header/index';
-import DashboardBar from './components/DashboardBar';
-import DashboardControl from './components/DashboardControl';
+import SettingsTable from './components/SettingsTable';
 
-const DashboardScreen = () => {
+const SettingScreen = () => {
   return (
     <ImageBackground source={background} style={styles.background}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Dashboard</Text>
+        <Text style={styles.title}>Settings</Text>
       </View>
       <View style={styles.container}>
-        <View style={styles.content}>
-          <View style={styles.modeContainer}>
-            <DashboardBar />
-          </View>
-          <View style={styles.tableContainer}>
-            <DashboardControl />
-          </View>
-        </View>
+        <SettingsTable />
       </View>
       <Header style={styles.header} />
     </ImageBackground>
@@ -34,9 +26,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  content: {
-    flex: 1,
-  },
   titleContainer: {
     marginTop: 10,
     justifyContent: 'center',
@@ -49,21 +38,6 @@ const styles = StyleSheet.create({
     color: '#261a57',
     elevation: 10,
   },
-  modeContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '8%',
-    marginTop: -50,
-  },
-  tableContainer: {
-    flex: 3,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '80%',
-  },
   header: {
     position: 'absolute',
     bottom: 0,
@@ -71,4 +45,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DashboardScreen;
+export default SettingScreen;
