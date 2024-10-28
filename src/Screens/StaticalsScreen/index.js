@@ -1,10 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import background from '../../assets/background6.jpg';
 import Header from '../../Components/Header/index';
 import DashboardBar from './components/DashboardBar';
+import Chart from './components/Chart';
+import ChartBar from './components/ChartBar';
 
 const DashboardScreen = () => {
+  const [selected, setSelected] = useState(true);
+
+  const handleSelectionChange = selectedOption => {
+    setSelected(selectedOption === 'Month');
+  };
+
   return (
     <ImageBackground source={background} style={styles.background}>
       <View style={styles.titleContainer}>
@@ -13,10 +21,10 @@ const DashboardScreen = () => {
       <View style={styles.container}>
         <View style={styles.content}>
           <View style={styles.modeContainer}>
-            <DashboardBar />
+            <DashboardBar onSelectionChange={handleSelectionChange} />
           </View>
           <View style={styles.tableContainer}>
-            <Text>02</Text>
+            {selected ? <Chart /> : <ChartBar />}
           </View>
         </View>
       </View>

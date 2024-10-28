@@ -8,6 +8,7 @@ import {
   Modal,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 
@@ -90,7 +91,11 @@ const TimeTable = () => {
   );
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   return (
@@ -141,6 +146,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
     flex: 1,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 24,

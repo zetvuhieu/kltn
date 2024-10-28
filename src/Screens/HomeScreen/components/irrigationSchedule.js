@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ImageBackground, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import background from '../../../assets/background8.jpg';
 
@@ -32,7 +39,6 @@ const IrrigationSchedule = () => {
           });
 
           setTimerData(timerArray);
-          console.log(timerArray); // In ra dữ liệu đã sắp xếp
         } else {
           console.log('Document does not exist!');
         }
@@ -55,7 +61,13 @@ const IrrigationSchedule = () => {
   );
 
   if (loading) {
-    return <Text>Loading...</Text>; // Có thể thêm giao diện loading
+    return (
+      <View style={styles.container}>
+        <View style={styles.content}>
+          <ActivityIndicator size="large" color="#1257e0" />
+        </View>
+      </View>
+    );
   }
 
   return (

@@ -1,71 +1,18 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  ImageBackground,
-} from 'react-native';
-import firestore from '@react-native-firebase/firestore';
-import {RadioButton} from 'react-native-paper';
+import React, {useState} from 'react';
+import {View, StyleSheet, ImageBackground} from 'react-native';
+import {Button} from 'react-native-paper'; // Import Button from react-native-paper
 import background from '../../../assets/background9.jpg';
 
-const DashboardBar = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [isMode, setMode] = useState('auto');
+const DashboardBar = ({onSelectionChange}) => {
+  const [selected, setSelected] = useState('Month');
+  const [selectedCheck, setSelectedCheck] = useState(true);
 
-  const fetchData = async () => {
-    try {
-      const documentSnapshot = await firestore()
-        .collection('system')
-        .doc('2Guvl9gNbqPIgiKqU2v1')
-        .get();
-
-      if (documentSnapshot.exists) {
-        const fetchedData = documentSnapshot.data();
-        setData(fetchedData);
-        setMode(fetchedData.mode === 0 ? 'manual' : 'auto');
-      }
-    } catch (error) {
-      console.error('Error fetching data: ', error);
-    } finally {
-      setLoading(false);
-    }
+  const handlePress = option => {
+    setSelected(option);
+    setSelectedCheck(!selectedCheck);
+    onSelectionChange(option);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const sendControlSignal = async value => {
-    try {
-      const signal = value === 'automatic' ? 1 : 0;
-      await firestore()
-        .collection('system')
-        .doc('2Guvl9gNbqPIgiKqU2v1')
-        .update({mode: signal});
-
-      console.log(`Sent signal: ${signal}`);
-    } catch (error) {
-      console.error('Error sending control signal: ', error);
-    } finally {
-      fetchData();
-    }
-  };
-
-  const handleRadioChange = value => {
-    setMode(value === 'automatic' ? 'auto' : 'manual');
-    sendControlSignal(value);
-  };
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#1257e0" />
-      </View>
-    );
-  }
   return (
     <ImageBackground
       source={background}
@@ -73,20 +20,28 @@ const DashboardBar = () => {
       imageStyle={styles.backgroundImage}>
       <View style={styles.container}>
         <View style={styles.radioItem}>
-          <RadioButton
-            value="automatic"
-            status={isMode === 'auto' ? 'checked' : 'unchecked'}
-            onPress={() => handleRadioChange('automatic')}
-          />
-          <Text style={styles.text}>Automatic</Text>
+          <Button
+            mode="contained"
+            onPress={() => handlePress('Month')}
+            style={styles.button}
+            labelStyle={[
+              styles.link,
+              {color: selected === 'Month' ? '#e2e61c' : '#ffffff'},
+            ]}>
+            Month
+          </Button>
         </View>
         <View style={styles.radioItem}>
-          <RadioButton
-            value="manual"
-            status={isMode === 'manual' ? 'checked' : 'unchecked'}
-            onPress={() => handleRadioChange('manual')}
-          />
-          <Text style={styles.text}>Manual</Text>
+          <Button
+            mode="contained"
+            onPress={() => handlePress('Day')}
+            style={styles.button}
+            labelStyle={[
+              styles.link,
+              {color: selected === 'Day' ? '#e2e61c' : '#ffffff'},
+            ]}>
+            Day
+          </Button>
         </View>
       </View>
     </ImageBackground>
@@ -107,17 +62,16 @@ const styles = StyleSheet.create({
     borderColor: '#f2e9e9',
     flexDirection: 'row',
     borderRadius: 15,
-    padding: 5,
+    padding: 10,
   },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+  button: {
+    marginHorizontal: 8,
+    backgroundColor: '#63948e',
   },
-  text: {
+  link: {
     fontSize: 16,
-    marginLeft: 8,
     fontWeight: 'bold',
-    color: '#261a57',
+    color: 'white',
   },
   radioItem: {
     flexDirection: 'row',
