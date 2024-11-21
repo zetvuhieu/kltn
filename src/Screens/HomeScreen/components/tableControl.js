@@ -1,5 +1,6 @@
 import React from 'react';
 import StateControl from './stateControl';
+import PredictConsumption from './predictConsumtion';
 import IrrigationSchedule from './irrigationSchedule';
 import Temperature from './temperature';
 import DataWeather from './dataWeather';

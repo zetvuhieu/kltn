@@ -8,6 +8,7 @@ import {
   faBell,
   faSliders,
   faGear,
+  faBolt,
 } from '@fortawesome/free-solid-svg-icons';
 
 const Header = () => {
@@ -18,6 +19,7 @@ const Header = () => {
     {name: 'home', path: '/', icon: faHouse},
     {name: 'dashboard', path: '/dashboard', icon: faSliders},
     {name: 'staticals', path: '/staticals', icon: faChartSimple},
+    {name: 'predict', path: '/predict', icon: faBolt},
     {name: 'notification', path: '/notification', icon: faBell},
     {name: 'setting', path: '/setting', icon: faGear},
   ];
@@ -29,6 +31,8 @@ const Header = () => {
       setCurrentPage('dashboard');
     } else if (currentPath === '/staticals') {
       setCurrentPage('staticals');
+    } else if (currentPath === '/predict') {
+      setCurrentPage('predict');
     } else if (currentPath === '/notification') {
       setCurrentPage('notification');
     } else if (currentPath === '/setting') {

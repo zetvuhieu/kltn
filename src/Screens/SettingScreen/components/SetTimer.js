@@ -30,7 +30,6 @@ const TimeTable = () => {
         if (documentSnapshot.exists) {
           const fetchedData = documentSnapshot.data();
           setTimerData(fetchedData.timer);
-          console.log(fetchedData.timer);
         } else {
           console.log('Document does not exist!');
         }

@@ -10,13 +10,15 @@ const DashboardScreen = () => {
   const [selected, setSelected] = useState(true);
 
   const handleSelectionChange = selectedOption => {
+    // Nếu selectedOption là 'Month', gán isSelected = false
+    // Nếu selectedOption là 'Day', gán isSelected = true
     setSelected(selectedOption === 'Month');
   };
 
   return (
     <ImageBackground source={background} style={styles.background}>
       <View style={styles.titleContainer}>
-        <Text style={styles.title}>Dashboard</Text>
+        <Text style={styles.title}>Statistical</Text>
       </View>
       <View style={styles.container}>
         <View style={styles.content}>

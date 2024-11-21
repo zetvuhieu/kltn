@@ -4,18 +4,13 @@ import {BarChart} from 'react-native-chart-kit';
 
 const DataList = () => {
   const node1Data = [
-    {date: '01-01-1970', moil: '2400.00'},
-    {date: '03-02-1970', moil: '1550.00'},
-    {date: '04-03-1970', moil: '1740.00'},
-    {date: '04-04-1970', moil: '1730.00'},
-    {date: '04-05-1970', moil: '1840.00'},
-    {date: '04-06-1970', moil: '1780.00'},
-    {date: '04-07-1970', moil: '1570.00'},
-    {date: '04-08-1970', moil: '1720.00'},
-    {date: '04-09-1970', moil: '1755.00'},
-    {date: '04-10-1970', moil: '1600.00'},
-    {date: '04-11-1970', moil: '1900.00'},
-    {date: '04-12-1970', moil: '1380.00'},
+    {date: '24-10-1970', vol: '800'},
+    {date: '25-10-1970', vol: '600'},
+    {date: '26-10-1970', vol: '650'},
+    {date: '27-10-1970', vol: '700'},
+    {date: '28-10-1970', vol: '710'},
+    {date: '29-10-1970', vol: '920'},
+    {date: '30-10-1970', vol: '890'},
   ];
 
   const [loading, setLoading] = useState(true);
@@ -24,8 +19,8 @@ const DataList = () => {
     const monthlyData = {};
 
     node1Data.forEach(item => {
-      const month = item.date.split('-')[1]; // Lấy tháng từ dữ liệu
-      const moisture = parseFloat(item.moil);
+      const month = item.date.split('-')[0]; // Lấy tháng từ dữ liệu
+      const moisture = parseFloat(item.vol);
 
       // Cộng dồn lượng nước theo tháng
       if (monthlyData[month]) {

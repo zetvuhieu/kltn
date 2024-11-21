@@ -1,19 +1,26 @@
 import React from 'react';
 import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import Header from '../../Components/Header/index';
-import NotificationList from './components/NotificationList';
-import ListNotification from './components/ListNotification';
 import background from '../../assets/background6.jpg';
-const NotificationScreen = () => {
+import PredictDay from './components/predictDay';
+import PredictMonth from './components/predictMonth';
+
+const HomeScreen = () => {
   return (
     <ImageBackground source={background} style={styles.background}>
       <View style={styles.container}>
         <View style={styles.content}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Notification</Text>
+            <Text style={styles.title}>Water Usage Forecast</Text>
           </View>
           <View style={styles.tableContainer}>
-            <ListNotification style={styles.notificationList} />
+            <PredictDay />
+            <>
+              <Text>
+                --------------------------------------------------------------------
+              </Text>
+            </>
+            <PredictMonth />
           </View>
         </View>
         <Header style={styles.header} />
@@ -32,11 +39,8 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    alignItems: 'center',
-    width: '100%',
   },
   titleContainer: {
-    flexDirection: 'row',
     marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -49,11 +53,10 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   tableContainer: {
-    flex: 1,
-    width: '95%',
-  },
-  notificationList: {
-    width: '100%', // Ensures NotificationList takes the full width of the container
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '80%',
   },
   header: {
     position: 'absolute',
@@ -62,4 +65,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotificationScreen;
+export default HomeScreen;
