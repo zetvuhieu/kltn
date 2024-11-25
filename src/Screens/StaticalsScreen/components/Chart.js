@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+} from 'react-native';
 import {BarChart} from 'react-native-chart-kit';
 import firestore from '@react-native-firebase/firestore';
 
@@ -67,7 +74,7 @@ const DataList = () => {
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       ) : (
-        <>
+        <ScrollView>
           <Text style={styles.title}>Monthly Water Data</Text>
           {monthlyWaterData.length > 0 ? (
             <>
@@ -116,28 +123,31 @@ const DataList = () => {
                 }}
               />
               <View style={styles.containerInfomation}>
-                <View style={styles.containerInfo}>
-                  <Text style={styles.volumeTitle}>
-                    Month of Highest Consumption: {highestValue.month}
-                  </Text>
-                  <Text style={styles.volumeTitle}>
-                    Water Consumed: {highestValue.vol} m³
-                  </Text>
-                </View>
-                <View style={styles.containerInfo}>
-                  <Text style={styles.volumeText}>
-                    Month of Lowest Consumption: {lowestValue.month}
-                  </Text>
-                  <Text style={styles.volumeText}>
-                    Water Consumed: {lowestValue.vol} m³
-                  </Text>
+                <View style={styles.containerTable}>
+                  <View style={[styles.row, styles.header]}>
+                    <Text style={[styles.cell, styles.headerText]}>Month</Text>
+                    <Text style={[styles.cell, styles.headerText]}>
+                      Consumed
+                    </Text>
+                  </View>
+                  {data.map((item, index) => (
+                    <View
+                      key={index}
+                      style={[
+                        styles.row,
+                        index % 2 === 0 ? styles.evenRow : styles.oddRow,
+                      ]}>
+                      <Text style={styles.cell}>{item.month}</Text>
+                      <Text style={styles.cell}>{item.vol} L</Text>
+                    </View>
+                  ))}
                 </View>
               </View>
             </>
           ) : (
             <Text>Không có dữ liệu cho biểu đồ</Text>
           )}
-        </>
+        </ScrollView>
       )}
     </View>
   );
@@ -179,6 +189,34 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 1,
     marginVertical: 5,
+  },
+  containerTable: {
+    flex: 1,
+    paddingTop: '5%',
+    backgroundColor: '#f9f9f9',
+  },
+  row: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+  },
+  header: {
+    backgroundColor: '#41aafa',
+  },
+  evenRow: {
+    backgroundColor: '#f1f1f1',
+  },
+  oddRow: {
+    backgroundColor: '#fff',
+  },
+  cell: {
+    flex: 1,
+    padding: 15,
+    textAlign: 'center',
+  },
+  headerText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
 
