@@ -11,6 +11,8 @@ import {
 import axios from 'axios';
 import background from '../../../assets/background5.jpg';
 
+const API_KEY = 'http://192.168.123.18:5000';
+
 const PredictMonth = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -21,11 +23,12 @@ const PredictMonth = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://192.168.2.107:5000/predict_day');
+      const response = await axios.get(`${API_KEY}/predict_day`);
       setData(response.data);
     } catch (error) {
       setError('Error fetching data');
       Alert.alert('Error', 'Could not fetch data from the server');
+      console.log(error);
     } finally {
       setLoading(false);
     }

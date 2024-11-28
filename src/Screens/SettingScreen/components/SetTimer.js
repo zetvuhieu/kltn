@@ -85,7 +85,13 @@ const TimeTable = () => {
     <View style={styles.row}>
       <Text style={styles.cell}>{item.id}</Text>
       <Text style={styles.cell}>{item.hour}</Text>
-      <Button title="Edit" onPress={() => handleEditPress(item)} />
+      <View style={styles.cell}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleEditPress(item)}>
+          <Text style={styles.buttonText}>Edit</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -99,17 +105,19 @@ const TimeTable = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Bảng Giờ</Text>
-      <View style={styles.header}>
-        <Text style={styles.headerCell}>STT</Text>
-        <Text style={styles.headerCell}>Giờ</Text>
-        <Text style={styles.headerCell}>Edit Giờ</Text>
+      <Text style={styles.title}>Watering Scheduler</Text>
+      <View style={styles.table}>
+        <View style={styles.header}>
+          <Text style={styles.headerCell}>Ordinal</Text>
+          <Text style={styles.headerCell}>Time Slot</Text>
+          <Text style={styles.headerCell}>Actions</Text>
+        </View>
+        <FlatList
+          data={timerArray}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
       </View>
-      <FlatList
-        data={timerArray}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
 
       {/* Modal cho chỉnh sửa giờ */}
       <Modal
@@ -119,20 +127,22 @@ const TimeTable = () => {
         onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Chỉnh Sửa Giờ</Text>
+            <Text style={styles.modalTitle}>Time Adjustment</Text>
             <TextInput
               style={styles.input}
               value={selectedHour}
               onChangeText={setSelectedHour}
             />
-            <TouchableOpacity style={styles.button} onPress={handleSave}>
-              <Text style={styles.buttonText}>Lưu</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => setModalVisible(false)}>
-              <Text style={styles.buttonText}>Hủy</Text>
-            </TouchableOpacity>
+            <View style={styles.editTimeContainer}>
+              <TouchableOpacity style={styles.button} onPress={handleSave}>
+                <Text style={styles.buttonText}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -144,7 +154,6 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: '#fff',
-    flex: 1,
     justifyContent: 'center',
   },
   title: {
@@ -152,28 +161,54 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  table: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
   header: {
     flexDirection: 'row',
+    backgroundColor: '#f1f1f1',
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    marginBottom: 10,
-    paddingBottom: 10,
+    borderBottomColor: '#ddd',
+    paddingVertical: 10,
   },
   headerCell: {
     flex: 1,
     fontWeight: 'bold',
     textAlign: 'center',
+    paddingHorizontal: 5,
   },
   row: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#ddd',
+    paddingVertical: 10,
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   cell: {
     flex: 1,
     textAlign: 'center',
+    paddingHorizontal: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '50%',
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   modalContainer: {
     flex: 1,
@@ -201,16 +236,12 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
   },
-  button: {
-    backgroundColor: '#007BFF',
-    padding: 10,
-    borderRadius: 5,
+  editTimeContainer: {
     width: '100%',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    flexDirection: 'row', // Các nút sẽ xếp ngang
+    justifyContent: 'center', // Căn giữa các nút theo chiều ngang
+    alignItems: 'center', // Căn giữa các nút theo chiều dọc
+    gap: 20, // Khoảng cách giữa các nút (tuỳ chỉnh)
   },
 });
 
