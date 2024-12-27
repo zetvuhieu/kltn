@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ActivityIndicator,
-  FlatList,
   ScrollView,
 } from 'react-native';
 import {BarChart} from 'react-native-chart-kit';
@@ -12,58 +11,50 @@ import firestore from '@react-native-firebase/firestore';
 
 const DataList = () => {
   const [loading, setLoading] = useState(true);
-  const [highestValue, setHighestValue] = useState('');
-  const [lowestValue, setLowestValue] = useState('');
   const [data, setData] = useState([]);
 
   const fetchData = async () => {
     try {
       const documentSnapshot = await firestore()
-        .collection('analytics')
-        .doc('qDkyWOixmeP1VtK41fgL')
+        .collection('analytics_sub')
+        .doc('analytics_sub')
         .get();
 
       if (documentSnapshot.exists) {
         const fetchedData = documentSnapshot.data();
 
-        // Sắp xếp dữ liệu theo thời gian giảm dần để lấy 7 tháng gần nhất
-        const sortedData = fetchedData.waterConsumed.sort((a, b) => {
-          const dateA = new Date(`${a.month}-01`);
-          const dateB = new Date(`${b.month}-01`);
+        // Lấy dữ liệu daily từ Firestore
+        const dailyData = fetchedData?.daily;
+
+        // Kiểm tra nếu không có dữ liệu daily
+        if (!dailyData || dailyData.length === 0) {
+          throw new Error('No daily data found');
+        }
+
+        // Chuyển đổi dữ liệu thành dạng cần thiết
+        const transformedData = dailyData.map(entry => ({
+          day: entry.day,
+          vol: parseFloat(entry.vol),
+          humidity: parseFloat(entry.humidity),
+          temperature: parseFloat(entry.temperature),
+          rain: parseInt(entry.rain, 10),
+        }));
+
+        // Sắp xếp theo ngày giảm dần
+        const sortedData = transformedData.sort((a, b) => {
+          const dateA = new Date(a.day.split('-').reverse().join('-'));
+          const dateB = new Date(b.day.split('-').reverse().join('-'));
           return dateB - dateA; // Sắp xếp giảm dần
         });
 
-        // Lấy 7 tháng gần nhất
+        // Lấy 7 ngày gần nhất
         const recentData = sortedData.slice(0, 7);
-
-        // Sắp xếp lại theo thời gian tăng dần
-        const ascendingData = recentData.sort((a, b) => {
-          const dateA = new Date(`${a.month}-01`);
-          const dateB = new Date(`${b.month}-01`);
-          return dateA - dateB; // Sắp xếp tăng dần
-        });
-
-        setData(ascendingData);
-
-        // Tìm giá trị cao nhất và thấp nhất
-        const highest = ascendingData.reduce(
-          (acc, item) => {
-            return parseFloat(item.vol) > parseFloat(acc.vol) ? item : acc;
-          },
-          {month: '', vol: '0'},
-        );
-        setHighestValue(highest);
-
-        const lowest = ascendingData.reduce(
-          (acc, item) => {
-            return parseFloat(item.vol) < parseFloat(acc.vol) ? item : acc;
-          },
-          {month: '', vol: Infinity.toString()},
-        );
-        setLowestValue(lowest);
+        setData(recentData);
+      } else {
+        throw new Error('No document found');
       }
     } catch (error) {
-      console.error('Error fetching data: ', error);
+      console.error('Error fetching data: ', error.message);
     } finally {
       setLoading(false);
     }
@@ -73,17 +64,17 @@ const DataList = () => {
     fetchData();
   }, []);
 
-  // Prepare the data for the chart
+  // Prepare the data for the chart and sort by day in ascending order
   const prepareChartData = () => {
-    return data.map(item => ({
-      month: item.month,
-      value: parseFloat(item.vol) || 0, // Convert volume to a number, default to 0 if NaN
-    }));
+    return data
+      .map(item => ({
+        day: item.day.split('-')[0], // Chỉ lấy phần ngày
+        value: item.vol, // Dữ liệu về lượng nước tiêu thụ
+      }))
+      .sort((a, b) => parseInt(a.day) - parseInt(b.day)); // Sắp xếp theo thứ tự ngày (từ nhỏ đến lớn)
   };
 
   const monthlyWaterData = prepareChartData();
-
-  // Tính giá trị tối đa cho trục Y
   const maxValue = Math.max(...monthlyWaterData.map(item => item.value), 0);
 
   return (
@@ -99,42 +90,28 @@ const DataList = () => {
             <>
               <BarChart
                 data={{
-                  labels: monthlyWaterData.map(item => item.month), // Nhãn tháng
+                  labels: monthlyWaterData.map(item => item.day),
                   datasets: [
                     {
-                      data: monthlyWaterData.map(item => item.value), // Giá trị cho mỗi cột
+                      data: monthlyWaterData.map(item => item.value),
                     },
                   ],
                 }}
-                width={320} // Độ rộng biểu đồ
-                height={220} // Chiều cao biểu đồ
-                yAxisLabel="" // Không hiển thị nhãn bên trái
-                yAxisSuffix="" // Ký tự bổ sung cho giá trị trên trục Y
-                fromZero={true} // Đảm bảo trục Y bắt đầu từ 0
-                showValuesOnTopOfBars={false} // Hiển thị giá trị trên đầu mỗi thanh
-                verticalLabelRotation={0} // Để nhãn tháng nằm ngang
+                width={320}
+                height={220}
+                fromZero={true}
                 chartConfig={{
                   backgroundColor: '#ffffff',
-                  backgroundGradientFrom: '#f0f0f0', // Màu nền chuyển tiếp
-                  backgroundGradientTo: '#ffffff', // Màu nền chuyển tiếp
+                  backgroundGradientFrom: '#f0f0f0',
+                  backgroundGradientTo: '#ffffff',
                   decimalPlaces: 0,
                   barPercentage: 0.5,
-                  color: (opacity = 1) => `rgba(0, 123, 255, ${opacity})`, // Màu cho cột
-                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Màu nhãn
-
+                  color: (opacity = 1) => `rgba(0, 123, 255, ${opacity})`,
+                  labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
                   style: {
                     borderRadius: 16,
                   },
-                  propsForDots: {
-                    r: '6',
-                    strokeWidth: '2',
-                    stroke: '#ffa726',
-                    fontSize: 5,
-                  },
-                  propsForshowValuesOnTopOfBars: {
-                    fontSize: 5, // Cỡ chữ nhỏ hơn
-                  },
-                  yAxisInterval: Math.ceil(maxValue / 10), // Điều chỉnh khoảng cách nhãn trên trục Y
+                  yAxisInterval: Math.ceil(maxValue / 10),
                 }}
                 style={{
                   marginVertical: 8,
@@ -156,7 +133,7 @@ const DataList = () => {
                         styles.row,
                         index % 2 === 0 ? styles.evenRow : styles.oddRow,
                       ]}>
-                      <Text style={styles.cell}>{item.month}</Text>
+                      <Text style={styles.cell}>{item.day}</Text>
                       <Text style={styles.cell}>{item.vol} L</Text>
                     </View>
                   ))}
@@ -188,26 +165,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     color: '#343a40',
-  },
-  volumeTitle: {
-    fontSize: 16,
-    color: '#e3550e',
-  },
-  volumeText: {
-    fontSize: 16,
-    color: '#2277e6',
-  },
-  containerInfo: {
-    marginTop: 15,
-    padding: 16,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 1,
-    marginVertical: 5,
   },
   containerTable: {
     flex: 1,

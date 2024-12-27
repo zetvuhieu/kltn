@@ -7,6 +7,7 @@ import {
   ImageBackground,
   FlatList,
   Dimensions,
+  Button,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -30,7 +31,7 @@ const DashboardBar = () => {
     dataNode1 && dataNode2
       ? [
           {
-            id: '0',
+            id: 0,
             name: 'Node 1',
             icon: faTree,
             temp: dataNode1.temp,
@@ -38,7 +39,7 @@ const DashboardBar = () => {
             vol: dataNode1.vol,
           },
           {
-            id: '1',
+            id: 1,
             name: 'Node 2',
             icon: faTree,
             temp: dataNode2.temp,
@@ -46,7 +47,7 @@ const DashboardBar = () => {
             vol: dataNode2.vol,
           },
           {
-            id: '2',
+            id: 2,
             name: 'Node 3',
             icon: faTree,
             temp: '25',
@@ -54,7 +55,7 @@ const DashboardBar = () => {
             vol: '1500',
           },
           {
-            id: '3',
+            id: 3,
             name: 'Node 4',
             icon: faTree,
             temp: '25',
@@ -201,6 +202,33 @@ const DashboardBar = () => {
     fecthDataNode2();
   }, []);
 
+  const handleIrrigate = async value => {
+    try {
+      // Kiểm tra giá trị của value để cập nhật trạng thái cho node tương ứng
+      if (value === 0) {
+        await firestore()
+          .collection('system')
+          .doc('2Guvl9gNbqPIgiKqU2v1')
+          .update({
+            node1State: 1, // Cập nhật node1State thành 1
+            node2State: 0, // Thêm nodeState với giá trị 0
+          }); // Cập nhật node1State thành 1
+      } else if (value === 1) {
+        await firestore()
+          .collection('system')
+          .doc('2Guvl9gNbqPIgiKqU2v1')
+          .update({
+            node2State: 1, // Cập nhật node1State thành 1
+            node1State: 0, // Thêm nodeState với giá trị 0
+          }); // Cập nhật node2State thành 1
+      }
+
+      console.log('Sent signal: ok');
+    } catch (error) {
+      console.error('Error sending control signal: ', error);
+    }
+  };
+
   const renderItem = ({item}) => (
     <View style={styles.itemContainer}>
       <ImageBackground
@@ -212,6 +240,15 @@ const DashboardBar = () => {
         <Text style={styles.itemDetail}>Temp: {item.temp}°C</Text>
         <Text style={styles.itemDetail}>Humi: {item.humi}%</Text>
         <Text style={styles.itemDetail}>Vol: {item.vol} mV</Text>
+        {data === 1 ? (
+          <View></View>
+        ) : (
+          <View>
+            <Button
+              title="Irrigate"
+              onPress={() => handleIrrigate(item.id)}></Button>
+          </View>
+        )}
       </ImageBackground>
     </View>
   );
@@ -248,7 +285,22 @@ const DashboardBar = () => {
           </View>
         </>
       ) : (
-        <Text style={styles.okText}>OK</Text>
+        <View>
+          <View style={styles.container}>
+            <ImageBackground
+              source={background}
+              style={styles.background}
+              imageStyle={styles.backgroundImage}>
+              <FlatList
+                data={arrayItem}
+                renderItem={renderItem}
+                keyExtractor={(_, index) => index.toString()}
+                numColumns={numColumns}
+                columnWrapperStyle={styles.columnWrapper}
+              />
+            </ImageBackground>
+          </View>
+        </View>
       )}
     </View>
   );
